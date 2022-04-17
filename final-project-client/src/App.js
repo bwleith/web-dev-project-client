@@ -25,7 +25,7 @@ function App() {
                      element={<Profile/>}/>
               <Route path="/search"
                      element={<Search/>}/>
-              <Route path="/search/:moveSearch"
+              <Route path="/search/:movieSearch"
                      element={<Search/>}/>
               <Route path="/details/:imdbID"
                      element={<Details/>}/>

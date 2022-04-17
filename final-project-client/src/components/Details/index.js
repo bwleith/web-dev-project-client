@@ -4,6 +4,7 @@ import axios from "axios";
 import NavigationSidebar from "../NavigationSidebar";
 
 const Details = () => {
+    const API_URL = 'http://localhost:4000/api';
     const [movieDetails, setMovieDetails] = useState({});
     const [ourMovieDetails, setOurMovieDetails] = useState([{}]);
     const [newReview, setNewReview] = useState({});
@@ -14,15 +15,22 @@ const Details = () => {
         setMovieDetails(response.data)
     }
     const searchOurMovieByImdbID = async () => {
-        const response = await axios.get(`http://localhost:4000/api/reviews?imdbId=${imdbID}`)
+        const response = await axios.get(`${API_URL}/reviews?imdbId=${imdbID}`)
         setOurMovieDetails(response.data)
     }
 
     const createReview = async(review) => {
-        console.log('POST http://localhost:4000/api/reviews')
+        console.log('POST ' + API_URL + '/reviews')
         console.log('body: ', review);
-        const response = await axios.post('http://localhost:4000/api/reviews', review);
+        const response = await axios.post(`${API_URL}/reviews`, review);
         console.log('post response: ', response);
+    }
+
+    const deleteReview = async(reviewId) => {
+        console.log('DELETE ' + API_URL + '/reviews/' + reviewId);
+        console.log(reviewId);
+        const response = await axios.delete(`${API_URL}/reviews/` + reviewId);
+        console.log('delete response: ', response);
     }
 
     useEffect(() => {
@@ -115,8 +123,19 @@ const Details = () => {
                                 <div className="col-12">
 
 
-                                    <div>
-                                        <b>{movie.username}</b>
+                                    <div className="row">
+                                        <div className="col-10">
+                                            <b>{movie.username}</b>
+                                        </div>
+                                        <div className="col-1">
+                                            <i className="fa fa-pencil float-right" />
+                                        </div>
+                                        <div className="col-1">
+                                            <i className="fa fa-delete-left float-right"
+                                               onClick={() => deleteReview(movie._id)}
+                                            />
+                                        </div>
+
                                     </div>
 
                                     {movie.review}
