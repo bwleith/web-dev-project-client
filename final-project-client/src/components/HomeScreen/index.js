@@ -47,8 +47,11 @@ const HomeScreen = () => {
                                             </Link>
                                         </div>
 
+
                                         <div>
-                                            @{movie.username}
+                                            <Link to={"/profile/" + movie.username}>
+                                                @{movie.username}
+                                            </Link>
                                         </div>
 
                                     </div>

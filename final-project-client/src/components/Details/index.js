@@ -33,6 +33,30 @@ const Details = () => {
         console.log('delete response: ', response);
     }
 
+    const createFavorite = async(movieDetails) => {
+        console.log('POST ' + API_URL + '/favorites');
+        const body = {
+            "username": "test_user",
+            "imdbId": `${imdbID}`,
+            "title": movieDetails.Title,
+            "poster": movieDetails.Poster
+        };
+        console.log('body ', body);
+        const response = await axios.post(`${API_URL}/favorites/`, body);
+        console.log('post response: ', response);
+    }
+
+    const deleteFavorite = async() => {
+        console.log('DELETE ' + API_URL + '/favorites');
+        console.log(`${imdbID}`)
+        const data = {
+            "username": "test_user",
+            "imdbId": `${imdbID}`
+        };
+        const response = await axios.delete(`${API_URL}/favorites/`, {data: data});
+        console.log('delete response: ', response);
+    }
+
     useEffect(() => {
         searchMovieByImdbID()
         searchOurMovieByImdbID()
@@ -73,6 +97,32 @@ const Details = () => {
 
                 <div className="row">
                     <span><b>Stars</b> {movieDetails.Actors}</span>
+                </div>
+
+                <hr/>
+
+                <div className="row">
+                    <div className="col-3">
+                        <button
+                            className = "btn btn-primary btn-block rounded-pill"
+                            onClick={() => createFavorite(movieDetails)}
+                        >
+                            Add to Favorites
+                        </button>
+                    </div>
+                </div>
+
+                <hr/>
+
+                <div className="row">
+                    <div className="col-3">
+                        <button
+                            className = "btn btn-primary btn-block rounded-pill"
+                            onClick={() => deleteFavorite(movieDetails)}
+                        >
+                            Remove from Favorites
+                        </button>
+                    </div>
                 </div>
 
                 <hr/>
@@ -125,7 +175,9 @@ const Details = () => {
 
                                     <div className="row">
                                         <div className="col-10">
-                                            <b>{movie.username}</b>
+                                            <Link to={"../profile/" + movie.username}>
+                                                <b>@{movie.username}</b>
+                                            </Link>
                                         </div>
                                         <div className="col-1">
                                             <i className="fa fa-pencil float-right" />

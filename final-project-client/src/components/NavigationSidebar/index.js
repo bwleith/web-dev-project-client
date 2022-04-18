@@ -17,7 +17,7 @@ const NavigationSidebar = (
                 <Link className={`list-group-item ${active === "search" ? "active" : "inactive"}`} to="/search">
                     <i className="fa fa-chart-bar"></i> Search</Link>
 
-                <Link className={`list-group-item ${active === "profile" ? "active" : "inactive"}`} to="/profile">
+                <Link className={`list-group-item ${active === "profile" ? "active" : "inactive"}`} to="/profile/test_user">
                     <i className="fa fa-user"></i> Profile</Link>
 
                 <Link className={`list-group-item ${active === "more" ? "active" : "inactive"}`} to="/">
