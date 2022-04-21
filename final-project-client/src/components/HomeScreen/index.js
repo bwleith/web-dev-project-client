@@ -2,9 +2,12 @@ import NavigationSidebar from '../NavigationSidebar';
 import React, {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import {Link, useNavigate, useParams} from "react-router-dom";
+import {useProfile} from "../../contexts/profile-context";
 
 const HomeScreen = () => {
     const [ourMovieDetails, setOurMovieDetails] = useState([{}]);
+
+    const {profile} = useProfile();
 
     const searchOurMovie = async () => {
         const response = await axios.get(`http://localhost:4000/api/reviews`)
@@ -21,7 +24,14 @@ const HomeScreen = () => {
             <div className="col-2 col-md-4 col-lg-3 col-xl-2">
                 <NavigationSidebar active="home"/>
             </div>
+
+
+
             <div className="col-10 col-md-8 col-lg-5 col-xl-6">
+                <div>
+                    {profile && '@' + profile.username}
+                </div>
+
                 <div className="row">
                     <h1>Recent Reviews</h1>
                 </div>

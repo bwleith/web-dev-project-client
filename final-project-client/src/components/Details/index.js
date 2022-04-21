@@ -2,14 +2,32 @@ import React, {useEffect, useState} from 'react';
 import {Link, useParams} from "react-router-dom";
 import axios from "axios";
 import NavigationSidebar from "../NavigationSidebar";
+import {useProfile} from "../../contexts/profile-context";
 
 const Details = () => {
     const API_URL = 'http://localhost:4000/api';
     const [movieDetails, setMovieDetails] = useState({});
     const [ourMovieDetails, setOurMovieDetails] = useState([{}]);
     const [newReview, setNewReview] = useState({});
+    const [isFavorite, setIsFavorite] = useState({});
     const url = "http://www.omdbapi.com/?apikey=de4824f3"
     const {imdbID} = useParams()
+    const {profile} = useProfile();
+
+    const searchFavorite = async () => {
+        console.log('inside searchFavorite');
+        const response = await axios.get(`${API_URL}/favorites/${profile.username}/movies/${imdbID}`);
+        console.log('response: ', response);
+        if (response.data) {
+            setIsFavorite(true)
+        } else {
+            setIsFavorite(false);
+        }
+        console.log('isFavorite: ', isFavorite);
+    }
+
+    console.log(searchFavorite());
+
     const searchMovieByImdbID = async () => {
         const response = await axios.get(`${url}&i=${imdbID}`)
         setMovieDetails(response.data)
@@ -24,6 +42,12 @@ const Details = () => {
         console.log('body: ', review);
         const response = await axios.post(`${API_URL}/reviews`, review);
         console.log('post response: ', response);
+        setOurMovieDetails(
+            [
+                review,
+                ...ourMovieDetails,
+            ]
+        )
     }
 
     const deleteReview = async(reviewId) => {
@@ -36,7 +60,7 @@ const Details = () => {
     const createFavorite = async(movieDetails) => {
         console.log('POST ' + API_URL + '/favorites');
         const body = {
-            "username": "test_user",
+            "username": `${profile.username}`,
             "imdbId": `${imdbID}`,
             "title": movieDetails.Title,
             "poster": movieDetails.Poster
@@ -44,6 +68,7 @@ const Details = () => {
         console.log('body ', body);
         const response = await axios.post(`${API_URL}/favorites/`, body);
         console.log('post response: ', response);
+        setIsFavorite(true);
     }
 
     const deleteFavorite = async() => {
@@ -55,6 +80,7 @@ const Details = () => {
         };
         const response = await axios.delete(`${API_URL}/favorites/`, {data: data});
         console.log('delete response: ', response);
+        setIsFavorite(false);
     }
 
     useEffect(() => {
@@ -68,6 +94,9 @@ const Details = () => {
                 <NavigationSidebar active="search"/>
             </div>
             <div className="col-10 col-md-8 col-lg-9 col-xl-10">
+                <div>
+                    {profile && profile.username}
+                </div>
                 <h1>{movieDetails.Title}</h1>
                 {movieDetails.Year} - {movieDetails.Runtime} - {movieDetails.Rated}
                 <div className = "row">
@@ -101,7 +130,7 @@ const Details = () => {
 
                 <hr/>
 
-                <div className="row">
+                {profile && !isFavorite && <div className="row">
                     <div className="col-3">
                         <button
                             className = "btn btn-primary btn-block rounded-pill"
@@ -110,11 +139,10 @@ const Details = () => {
                             Add to Favorites
                         </button>
                     </div>
-                </div>
+                </div>}
 
-                <hr/>
 
-                <div className="row">
+                {profile && isFavorite && <div className="row">
                     <div className="col-3">
                         <button
                             className = "btn btn-primary btn-block rounded-pill"
@@ -123,11 +151,11 @@ const Details = () => {
                             Remove from Favorites
                         </button>
                     </div>
-                </div>
+                </div>}
 
-                <hr/>
+                {profile && <hr/>}
 
-                <div className="row">
+                {profile && <div className="row">
 
                     <h4>Add a Review</h4>
 
@@ -136,7 +164,7 @@ const Details = () => {
                     <textarea className="form-control"
                         onChange={(e) =>
                             setNewReview({...newReview,
-                                "username": "test_user",
+                                "username": `${profile.username}`,
                                 "imdbId": `${imdbID}`,
                                 "title": movieDetails.Title,
                                 "poster": movieDetails.Poster,
@@ -156,7 +184,7 @@ const Details = () => {
                         Submit
                     </button>
 
-                </div>
+                </div>}
 
 
                 <hr/>

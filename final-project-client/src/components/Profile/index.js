@@ -2,6 +2,7 @@ import NavigationSidebar from "../NavigationSidebar";
 import {Link, useParams} from "react-router-dom";
 import React, {useEffect, useRef, useState} from "react";
 import axios from "axios";
+import {useProfile} from "../../contexts/profile-context";
 
 const Profile = () => {
     const API_URL = 'http://localhost:4000/api';
@@ -9,6 +10,9 @@ const Profile = () => {
     const [favorites, setFavorites] = useState([{}]);
     const params = useParams();
     const username = params.username;
+
+    const {profile} = useProfile();
+    console.log('profile ', profile);
 
     const searchRecentReviewsByUsername = async () => {
         console.log("GET " + `${API_URL}/reviews?username=${username}` + '');
@@ -38,6 +42,11 @@ const Profile = () => {
             </div>
             <div className="col-10 col-md-8 col-lg-9 col-xl-10">
                 Profile main content
+
+                <div>
+                    {profile && '@' + profile.username}
+                </div>
+
 
                 <h3>Favorites</h3>
 

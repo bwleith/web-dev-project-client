@@ -1,42 +1,63 @@
+import React, {useRef} from 'react';
+import * as service from '../../services/auth-service.js'
+import {useNavigate, Link} from "react-router-dom";
+import {useProfile} from "../../contexts/profile-context.js";
+
 const LoginScreen = () => {
+    const usernameRef = useRef()
+    const passwordRef = useRef()
+    const navigate = useNavigate()
+    const {signin} = useProfile()
+    const handleSignin = async () => {
+        console.log('inside handleSignin')
+        console.log('username: ', usernameRef.current.value);
+        console.log('password: ', passwordRef.current.value);
+        try {
+            await signin(
+                usernameRef.current.value,
+                passwordRef.current.value
+            )
+            navigate("/profile/" + usernameRef.current.value)
+        } catch (e) {
+            alert('Invalid Credentials')
+        }
+    }
+
     return(
         <div>
             <div className = "d-flex justify-content-center">
                 <form>
 
                     <div>
-                        <h3 className = "d-flex justify-content-center">Login Required</h3>
+                        <h3 className = "d-flex justify-content-center">Sign In</h3>
                     </div>
 
                     <div className="form-outline mb-4">
-                        <input type="email" id="form2Example1" className="form-control"/>
-                        <label className="form-label" htmlFor="form2Example1">Email address</label>
+                        <input ref={usernameRef} id="username" className="form-control"/>
+                        <label className="form-label" htmlFor="username">Username</label>
                     </div>
 
 
                     <div className="form-outline mb-4">
-                        <input type="password" id="form2Example2" className="form-control"/>
-                        <label className="form-label" htmlFor="form2Example2">Password</label>
+                        <input ref={passwordRef} type="password" id="password" className="form-control"/>
+                        <label className="form-label" htmlFor="password">Password</label>
                     </div>
 
 
-                    <div className="row mb-4">
-                        <div className="col d-flex justify-content-center">
 
-                            <div className="form-check">
-                                <input className="form-check-input" type="checkbox" value="" id="form2Example31" checked/>
-                                <label className="form-check-label" htmlFor="form2Example31"> Remember me </label>
-                            </div>
-                        </div>
 
-                    </div>
 
-                    <a href="home">
-                        <button type="button" className="btn btn-primary btn-block mb-4">Sign in</button>
-                    </a>
+                    <button type="button"
+                            className="btn btn-primary btn-block mb-4"
+                            onClick={handleSignin}
+                    >
+                        Sign in
+                    </button>
+
 
                     <div className="text-center">
-                        <p>Not a member? <a href="#!">Register</a></p>
+
+                        <p>Not a member? <Link to="../signup">Register</Link></p>
                     </div>
                 </form>
             </div>
