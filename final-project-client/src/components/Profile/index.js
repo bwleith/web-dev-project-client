@@ -8,11 +8,36 @@ const Profile = () => {
     const API_URL = 'http://localhost:4000/api';
     const [recentReviews, setRecentReviews] = useState([{}]);
     const [favorites, setFavorites] = useState([{}]);
+    const [followedByCurrentUser, setFollowedByCurrentUser] = useState(false);
     const params = useParams();
     const username = params.username;
 
     const {profile} = useProfile();
     console.log('profile ', profile);
+
+    const createFollow = async(follow) => {
+        console.log('POST ' + API_URL + '/follows')
+        console.log('body: ', follow);
+        const response = await axios.post(`${API_URL}/follows`, follow);
+        console.log('post response: ', response);
+        setFollowedByCurrentUser(true);
+    }
+
+    const deleteFollow = async(follow) => {
+        console.log('DELETE ' + API_URL + '/follows')
+        console.log('body: ', follow);
+        const response = await axios.delete(`${API_URL}/follows`, follow);
+        console.log('post response: ', response);
+        setFollowedByCurrentUser(false);
+    }
+
+    const checkFollowedByCurrentUser = async() => {
+        console.log('inside checkFollowedByCurrentUser');
+        console.log("GET + " + `${API_URL}/username/${profile.username}/follows/${username}`);
+        const response = await axios.get(`${API_URL}/username/${profile.username}/follows/${username}`);
+        setFollowedByCurrentUser(response.data !== null);
+        console.log('checkFollowedByCurrentUser response: ', response.data);
+    }
 
     const searchRecentReviewsByUsername = async () => {
         console.log("GET " + `${API_URL}/reviews?username=${username}` + '');
@@ -33,6 +58,7 @@ const Profile = () => {
     useEffect(() => {
         searchRecentReviewsByUsername()
         searchRecentFavoritesByUsername()
+        checkFollowedByCurrentUser()
     }, [])
 
     return(
@@ -45,6 +71,21 @@ const Profile = () => {
 
                 <div>
                     {profile && '@' + profile.username}
+                </div>
+
+                <div>
+                    <h4>{username}</h4>
+                    {profile && profile.username !== username && !followedByCurrentUser && <div>
+                        <i className="fa fa-plus"
+                           onClick={() => createFollow({username: profile.username, follows: username})}
+                        /> Follow
+                    </div>}
+
+                    {profile && profile.username !== username && followedByCurrentUser && <div>
+                        <i className="fa fa-minus"
+                           onClick={() => deleteFollow({username: profile.username, follows: username})}
+                        /> Unfollow
+                    </div>}
                 </div>
 
 
