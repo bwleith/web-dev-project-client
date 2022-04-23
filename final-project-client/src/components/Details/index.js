@@ -15,15 +15,17 @@ const Details = () => {
     const {profile} = useProfile();
 
     const searchFavorite = async () => {
-        console.log('inside searchFavorite');
-        const response = await axios.get(`${API_URL}/favorites/${profile.username}/movies/${imdbID}`);
-        console.log('response: ', response);
-        if (response.data) {
-            setIsFavorite(true)
-        } else {
-            setIsFavorite(false);
+        if (profile) {
+            console.log('inside searchFavorite');
+            const response = await axios.get(`${API_URL}/favorites/${profile.username}/movies/${imdbID}`);
+            console.log('response: ', response);
+            if (response.data) {
+                setIsFavorite(true)
+            } else {
+                setIsFavorite(false);
+            }
+            console.log('isFavorite: ', isFavorite);
         }
-        console.log('isFavorite: ', isFavorite);
     }
 
     console.log(searchFavorite());
@@ -50,11 +52,13 @@ const Details = () => {
         )
     }
 
-    const deleteReview = async(reviewId) => {
-        console.log('DELETE ' + API_URL + '/reviews/' + reviewId);
-        console.log(reviewId);
-        const response = await axios.delete(`${API_URL}/reviews/` + reviewId);
+    const deleteReview = async(review) => {
+        console.log('DELETE ' + API_URL + '/reviews', review);
+        const response = await axios.delete(`${API_URL}/reviews/`, {data: review});
         console.log('delete response: ', response);
+        setOurMovieDetails(
+            ourMovieDetails.filter(details => details !== review)
+        );
     }
 
     const createFavorite = async(movieDetails) => {
@@ -75,7 +79,7 @@ const Details = () => {
         console.log('DELETE ' + API_URL + '/favorites');
         console.log(`${imdbID}`)
         const data = {
-            "username": "test_user",
+            "username": `${profile.username}`,
             "imdbId": `${imdbID}`
         };
         const response = await axios.delete(`${API_URL}/favorites/`, {data: data});
@@ -94,9 +98,6 @@ const Details = () => {
                 <NavigationSidebar active="search"/>
             </div>
             <div className="col-10 col-md-8 col-lg-9 col-xl-10">
-                <div>
-                    {profile && profile.username}
-                </div>
                 <h1>{movieDetails.Title}</h1>
                 {movieDetails.Year} - {movieDetails.Runtime} - {movieDetails.Rated}
                 <div className = "row">
@@ -212,7 +213,7 @@ const Details = () => {
                                         </div>
                                         <div className="col-1">
                                             <i className="fa fa-delete-left float-right"
-                                               onClick={() => deleteReview(movie._id)}
+                                               onClick={() => deleteReview(movie)}
                                             />
                                         </div>
 

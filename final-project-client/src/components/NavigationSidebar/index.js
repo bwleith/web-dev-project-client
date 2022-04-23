@@ -47,7 +47,7 @@ const NavigationSidebar = (
                 }
 
 
-                <Link className={`list-group-item ${active === "more" ? "active" : "inactive"}`} to="/">
+                <Link className={`list-group-item ${active === "more" ? "active" : "inactive"}`} to="/More">
                     <i className="fa fa-circle"/> More</Link>
             </div>
             {!profile && <div className="d-grid mt-2">

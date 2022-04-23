@@ -58,6 +58,8 @@ const LoginScreen = () => {
                     <div className="text-center">
 
                         <p>Not a member? <Link to="../signup">Register</Link></p>
+
+                        <p>When using this site, you agree to abide by our <Link to="../terms-of-service">Terms of Service</Link></p>
                     </div>
                 </form>
             </div>

@@ -8,6 +8,8 @@ import Profile from './components/Profile';
 import Search from './components/Search';
 import Details from './components/Details';
 import SignUp from './components/SignUp';
+import More from './components/More';
+import TOS from './components/TOS';
 
 import {ProfileProvider} from "./contexts/profile-context";
 import SecureRoute from "./components/Secure-Route";
@@ -39,6 +41,10 @@ function App() {
                              element={<Details/>}/>
                       <Route path="/signup"
                              element={<SignUp/>}/>
+                      <Route path="/more"
+                             element={<More/>}/>
+                      <Route path="/terms-of-service"
+                             element={<TOS/>}/>
                   </Routes>
               </div>
             </Router>

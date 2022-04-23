@@ -48,6 +48,8 @@ const Signup = () => {
                 <div className="text-center">
 
                     <p>Already a member? <Link to="../signin">Sign In</Link></p>
+
+                    <p>By signing up, you agree to abide by our <Link to="../terms-of-service">Terms of Service</Link></p>
                 </div>
             </form>
         </div>
