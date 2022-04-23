@@ -12,11 +12,15 @@ const Search = () => {
     const searchUrl = "http://www.omdbapi.com/?apikey=de4824f3";
 
     const searchByTitle = async () => {
-        const searchString = titleSearchRef.current.value || movieSearch || 'batman' ;
-        const response = await axios.get(`${searchUrl}&s=${searchString}`);
-        setMovies(response.data.Search);
-        titleSearchRef.current.value = searchString;
-        navigate(`/search/${searchString}`);
+        const searchString = titleSearchRef.current.value || movieSearch || '' ;
+        if (searchString == '') {
+            setMovies([]);
+        } else {
+            const response = await axios.get(`${searchUrl}&s=${searchString}`);
+            setMovies(response.data.Search);
+            titleSearchRef.current.value = searchString;
+            navigate(`/search/${searchString}`);
+        }
     }
     useEffect(() => {
         searchByTitle()
