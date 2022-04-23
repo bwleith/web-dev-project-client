@@ -43,7 +43,7 @@ const Profile = () => {
     const deleteFollow = async(follow) => {
         console.log('DELETE ' + API_URL + '/follows')
         console.log('body: ', follow);
-        const response = await axios.delete(`${API_URL}/follows`, follow);
+        const response = await axios.delete(`${API_URL}/follows`, {data: follow});
         console.log('post response: ', response);
         setFollowedByCurrentUser(false);
     }
