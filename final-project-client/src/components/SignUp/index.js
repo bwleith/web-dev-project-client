@@ -1,5 +1,5 @@
 
-import React, {useRef} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import * as service from '../../services/auth-service';
 import {Link, useNavigate} from "react-router-dom";
 import {useProfile} from "../../contexts/profile-context.js";
@@ -7,21 +7,31 @@ import {useProfile} from "../../contexts/profile-context.js";
 const Signup = () => {
     const usernameRef = useRef()
     const passwordRef = useRef()
-    // const roleRef     = useRef()
+    const [role, setRole] = useState('Admin');
     const navigate = useNavigate()
     const {signup} = useProfile()
+
+    const handleDropdown = (e) => {
+        console.log('inside handleDropdown');
+        setRole(e.target.value);
+    };
+
     const handleSignup = async () => {
         try {
+            console.log('signing up with the following values: ');
+            console.log('role: ', role);
             await signup(
                 usernameRef.current.value,
                 passwordRef.current.value,
-                'Fan'
+                role
             )
             navigate('/profile/' + usernameRef.current.value);
         } catch (e) {
             alert('oops')
         }
     }
+
+
     return (
         <div className="d-flex justify-content-center">
             <form>
@@ -35,6 +45,15 @@ const Signup = () => {
                 <div className ="form-outline mb-4">
                     <input ref={passwordRef} id="password" className="form-control" type="password"/>
                     <label className="form-label" htmlFor="password">Password</label>
+                </div>
+                <div className="mb-4">
+                    <select className="form-select" name="role" id="role"
+                            onChange={(e) => handleDropdown(e)}>
+                        <option value="Admin">Admin</option>
+                        <option value="Fan">Fan</option>
+                        <option value="Read Only">Read Only</option>
+                    </select>
+                    <label className="form-label" htmlFor="role">Role</label>
                 </div>
 
                 <hr/>

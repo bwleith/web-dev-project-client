@@ -54,7 +54,7 @@ const HomeScreen = () => {
     }
 
     const searchUsers = async () => {
-        const response = await axios.get(`${API_URL}/users/limit/5`);
+        const response = await axios.get(`${API_URL}/users/limit/10`);
         console.log('users: ', response.data);
         setNewUsers(response.data);
     }

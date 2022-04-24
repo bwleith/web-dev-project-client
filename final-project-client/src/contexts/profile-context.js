@@ -28,11 +28,12 @@ export const ProfileProvider = ({children}) => {
         }
     }
 
-    const signup = async (email, password) => {
+    const signup = async (email, password, role) => {
         try {
             const newUser = await service.signup(
                 email,
-                password
+                password,
+                role
             )
             setProfile(newUser)
         } catch (e) {

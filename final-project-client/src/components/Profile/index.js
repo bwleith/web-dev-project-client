@@ -270,7 +270,8 @@ const Profile = () => {
                                             <b>{movie.username}</b>
                                         </div>
                                         <div className="col-2">
-                                            {profile && <i className="fa fa-delete-left float-right"
+                                            {profile && (profile.username === username || profile.role === 'Admin') &&
+                                                <i className="fa fa-delete-left float-right"
                                                onClick={() => deleteReview(movie)}
                                             />}
                                         </div>

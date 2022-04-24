@@ -2,8 +2,12 @@ import axios from "axios";
 const API_URL = "http://localhost:4000/api"
 const api = axios.create({withCredentials: true})
 
-export const signup = async (username, password) => {
-    const response = await api.post(`${API_URL}/signup`, {username, password})
+export const signup = async (username, password, role) => {
+    console.log('attempting signup with following values ')
+    console.log('username ', username)
+    console.log('password ', password)
+    console.log('role ', role)
+    const response = await api.post(`${API_URL}/signup`, {username, password, role})
     return response.data
 }
 
