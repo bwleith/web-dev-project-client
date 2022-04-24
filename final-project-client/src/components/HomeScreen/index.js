@@ -13,6 +13,46 @@ const HomeScreen = () => {
 
     const {profile} = useProfile();
 
+    const handleLike = async (movie) => {
+        console.log('inside handleLike');
+        if (profile) {
+            setOurMovieDetails(
+                ourMovieDetails.map(
+                    details => details._id !== movie._id ? details :
+                        {
+                            ...movie,
+                            likes: [...movie.likes, {username: profile.username, reviewId: details._id}],
+                            liked: true
+                        }
+                )
+            );
+            const response = await axios.post(`${API_URL}/likes`, {username: profile.username, _reviewId: movie._id});
+            console.log('handleLike response: ');
+            console.log(response);
+        }
+    }
+
+    const handleUnLike = async (movie) => {
+        console.log('inside handleUnlike')
+        if (profile) {
+            setOurMovieDetails(
+                ourMovieDetails.map(
+                    details => details._id !== movie._id ? details :
+                        {
+                            ...movie,
+                            likes: movie.likes.filter(like => like.username !== profile.username),
+                            liked: undefined
+                        }
+                )
+            );
+        }
+        const response = await axios.delete(`${API_URL}/likes`, {data: {username: profile.username, _reviewId: movie._id}});
+        console.log('handleLike response: ');
+        console.log(response);
+        console.log('movie.likes: ', movie.likes);
+
+    }
+
     const searchUsers = async () => {
         const response = await axios.get(`${API_URL}/users/limit/5`);
         console.log('users: ', response.data);
@@ -67,18 +107,36 @@ const HomeScreen = () => {
                                 <div className="col-10">
 
 
-                                    <div>
-                                        <div>
-                                            <Link to={"/details/" + movie.imdbId}>
-                                                <b>{movie.title}</b>
-                                            </Link>
+                                    <div className="row">
+                                        <div className="col-8">
+                                            <div>
+                                                <Link to={"/details/" + movie.imdbId}>
+                                                    <b>{movie.title}</b>
+                                                </Link>
+                                            </div>
+
+
+                                            <div>
+                                                <Link to={"/profile/" + movie.username}>
+                                                    @{movie.username}
+                                                </Link>
+                                            </div>
                                         </div>
-
-
-                                        <div>
-                                            <Link to={"/profile/" + movie.username}>
-                                                @{movie.username}
-                                            </Link>
+                                        <div className="col-4">
+                                            {profile && movie.likes !== undefined && movie.likes.filter(like => like.username === profile.username).length === 0 &&
+                                                <i className="fa fa-thumbs-up"
+                                                   onClick={(e) =>
+                                                   handleLike(movie)
+                                            }
+                                            />}
+                                            {profile && movie.likes !== undefined && movie.likes.filter(like => like.username === profile.username).length > 0 &&
+                                                <i className="fa fa-thumbs-up"
+                                                   onClick={(e) =>
+                                                   handleUnLike(movie)
+                                            }
+                                            />}
+                                            {!profile && <i className="fa fa-thumbs-up"/>}
+                                            {movie.likes && movie.likes.length} Likes
                                         </div>
 
                                     </div>

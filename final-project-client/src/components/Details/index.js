@@ -14,6 +14,46 @@ const Details = () => {
     const {imdbID} = useParams()
     const {profile} = useProfile();
 
+    const handleLike = async (movie) => {
+        console.log('inside handleLike');
+        if (profile) {
+            setOurMovieDetails(
+                ourMovieDetails.map(
+                    details => details._id !== movie._id ? details :
+                        {
+                            ...movie,
+                            likes: [...movie.likes, {username: profile.username, reviewId: details._id}],
+                            liked: true
+                        }
+                )
+            );
+            const response = await axios.post(`${API_URL}/likes`, {username: profile.username, _reviewId: movie._id});
+            console.log('handleLike response: ');
+            console.log(response);
+        }
+    }
+
+    const handleUnLike = async (movie) => {
+        console.log('inside handleUnlike')
+        if (profile) {
+            setOurMovieDetails(
+                ourMovieDetails.map(
+                    details => details._id !== movie._id ? details :
+                        {
+                            ...movie,
+                            likes: movie.likes.filter(like => like.username !== profile.username),
+                            liked: undefined
+                        }
+                )
+            );
+        }
+        const response = await axios.delete(`${API_URL}/likes`, {data: {username: profile.username, _reviewId: movie._id}});
+        console.log('handleLike response: ');
+        console.log(response);
+        console.log('movie.likes: ', movie.likes);
+
+    }
+
     const searchFavorite = async () => {
         if (profile) {
             console.log('inside searchFavorite');
@@ -169,7 +209,8 @@ const Details = () => {
                                 "imdbId": `${imdbID}`,
                                 "title": movieDetails.Title,
                                 "poster": movieDetails.Poster,
-                                "review": e.target.value
+                                "review": e.target.value,
+                                "likes": []
                             })}
                     >
                     </textarea>
@@ -196,20 +237,21 @@ const Details = () => {
 
                 <div>
                     {ourMovieDetails.map(
-                        movie =>
+
+
+
+                        (movie,index) =>
+
                             <div className="row mt-2" key={movie._id || 1}>
 
                                 <div className="col-12">
 
-
+                                    {index}
                                     <div className="row">
                                         <div className="col-10">
                                             <Link to={"../profile/" + movie.username}>
                                                 <b>@{movie.username}</b>
                                             </Link>
-                                        </div>
-                                        <div className="col-1">
-                                            <i className="fa fa-pencil float-right" />
                                         </div>
                                         <div className="col-1">
                                             <i className="fa fa-delete-left float-right"
@@ -219,7 +261,29 @@ const Details = () => {
 
                                     </div>
 
-                                    {movie.review}
+                                    <div className="row">
+                                        <div className="col-10">
+                                            {movie.review}
+                                        </div>
+                                        <div className="col-2">
+                                            {profile && movie.likes !== undefined && movie.likes.filter(like => like.username === profile.username).length === 0 &&
+                                                <i className="fa fa-thumbs-up"
+                                                   onClick={(e) =>
+                                                       handleLike(movie)
+                                                   }
+                                                />}
+                                            {profile && movie.likes !== undefined && movie.likes.filter(like => like.username === profile.username).length > 0 &&
+                                                <i className="fa fa-thumbs-up"
+                                                   onClick={(e) =>
+                                                       handleUnLike(movie)
+                                                   }
+                                                />}
+                                            {!profile && <i className="fa fa-thumbs-up"/>}
+                                            {movie.likes && movie.likes.length} Likes
+
+                                        </div>
+                                    </div>
+
 
 
                                     <hr/>
