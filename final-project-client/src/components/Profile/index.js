@@ -16,6 +16,15 @@ const Profile = () => {
 
     const {profile} = useProfile();
 
+    const deleteReview = async(review) => {
+        console.log('DELETE ' + API_URL + '/reviews', review);
+        const response = await axios.delete(`${API_URL}/reviews/`, {data: review});
+        console.log('delete response: ', response);
+        setRecentReviews(
+            recentReviews.filter(details => details !== review)
+        );
+    }
+
     const handleLike = async (movie) => {
         console.log('inside handleLike');
         if (profile) {
@@ -257,7 +266,15 @@ const Profile = () => {
 
                                 <div className="col-10">
                                     <div className="row">
-                                        <b>{movie.username}</b>
+                                        <div className="col-10">
+                                            <b>{movie.username}</b>
+                                        </div>
+                                        <div className="col-2">
+                                            {profile && <i className="fa fa-delete-left float-right"
+                                               onClick={() => deleteReview(movie)}
+                                            />}
+                                        </div>
+
                                     </div>
                                     <div className="row">
                                         <div className="col-10">
@@ -266,20 +283,22 @@ const Profile = () => {
 
 
                                         <div className="col-2">
-                                            {profile && movie.likes !== undefined && movie.likes.filter(like => like.username === profile.username).length === 0 &&
-                                                <i className="fa fa-thumbs-up"
-                                                   onClick={(e) =>
-                                                       handleLike(movie)
-                                                   }
-                                                />}
-                                            {profile && movie.likes !== undefined && movie.likes.filter(like => like.username === profile.username).length > 0 &&
-                                                <i className="fa fa-thumbs-up"
-                                                   onClick={(e) =>
-                                                       handleUnLike(movie)
-                                                   }
-                                                />}
-                                            {!profile && <i className="fa fa-thumbs-up"/>}
-                                            {movie.likes && movie.likes.length} Likes
+                                            <p className="text-right">
+                                                {profile && movie.likes !== undefined && movie.likes.filter(like => like.username === profile.username).length === 0 &&
+                                                    <i className="fa fa-thumbs-up"
+                                                       onClick={(e) =>
+                                                           handleLike(movie)
+                                                       }
+                                                    />}
+                                                {profile && movie.likes !== undefined && movie.likes.filter(like => like.username === profile.username).length > 0 &&
+                                                    <i className="fa fa-thumbs-up"
+                                                       onClick={(e) =>
+                                                           handleUnLike(movie)
+                                                       }
+                                                    />}
+                                                {!profile && <i className="fa fa-thumbs-up"/>}
+                                                {movie.likes && movie.likes.length} Likes
+                                            </p>
 
                                         </div>
 

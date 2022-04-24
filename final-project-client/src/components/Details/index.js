@@ -195,8 +195,7 @@ const Details = () => {
                 </div>}
 
                 {profile && <hr/>}
-
-                {profile && <div className="row">
+                {profile && (profile.role === 'Fan' || profile.role === 'Admin') && <div className="row">
 
                     <h4>Add a Review</h4>
 
@@ -240,13 +239,12 @@ const Details = () => {
 
 
 
-                        (movie,index) =>
+                        (movie) =>
 
                             <div className="row mt-2" key={movie._id || 1}>
 
                                 <div className="col-12">
 
-                                    {index}
                                     <div className="row">
                                         <div className="col-10">
                                             <Link to={"../profile/" + movie.username}>
@@ -254,9 +252,10 @@ const Details = () => {
                                             </Link>
                                         </div>
                                         <div className="col-1">
-                                            <i className="fa fa-delete-left float-right"
+                                            {profile && (profile.username === movie.username || profile.role === "Admin") &&
+                                                <i className="fa fa-delete-left float-right"
                                                onClick={() => deleteReview(movie)}
-                                            />
+                                            />}
                                         </div>
 
                                     </div>
