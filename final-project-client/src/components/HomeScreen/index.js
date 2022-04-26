@@ -157,7 +157,7 @@ const HomeScreen = () => {
 
                 {newUsers.map(
                     user =>
-                    <div className="row mt-2" key={user.username}>
+                    <div className="row mt-2" key={user.username || 'placeholder'}>
                         <Link to={'/profile/' + user.username}>
                             <div>
                                 <b>{user.firstName !== "" && user.firstName + ' ' + user.lastName}</b>
